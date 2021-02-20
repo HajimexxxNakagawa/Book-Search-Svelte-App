@@ -4,12 +4,17 @@
     import Spinner from '../components/Spinner.svelte'
     import type { BookItem, Result } from '../repositories/book';
     import RepositoryFactory, { BOOK } from '../repositories/RepositoryFactory'
+    import InfiniteScroll from "svelte-infinite-scroll"
     const BookRepository = RepositoryFactory[BOOK]
-
+    
     let q = ''
     let empty = false
     let books: BookItem[] = []
     let promise: Promise<void>
+    let startIndex = 0
+    let totalItems = 0
+
+    $: hasMore = totalItems > books.length
 
     const handleSubmit = () => {
         if (!q.trim()) return
@@ -19,10 +24,28 @@
     const getBooks = async () => {
         books = []
         empty = false
+        startIndex = 0
         const result = await BookRepository.get({ q })
         empty = result.totalItems === 0
+        totalItems = result.totalItems
         books = result.items
     }
+
+    const handleLoadMore = () => {
+        startIndex += 10
+        promise = getNextPage()
+    }
+
+    const getNextPage = async () => {
+    const result = await BookRepository.get({ q, startIndex })
+
+    // 取得データが既に存在するものを含む可能性があるので、idでフィルタリング
+    const bookIds = books.map(book => book.id)
+    const filteredItems = result.items.filter(item => {
+      return !bookIds.includes(item.id)
+    })
+    books = [...books, ...filteredItems]
+  }
 </script>
   
 <form on:submit|preventDefault={handleSubmit}>
@@ -37,6 +60,7 @@
       <BookCard {book} />
       {/each}
     </div>
+    <InfiniteScroll window threshold={100} on:loadMore={handleLoadMore} {hasMore} />
     {/if}
     {#await promise}
     <div class="flex justify-center">
