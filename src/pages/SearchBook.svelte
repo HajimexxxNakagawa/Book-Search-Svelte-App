@@ -9,6 +9,7 @@
     
     let q = ''
     let empty = false
+    let unSearched = true
     let promise: Promise<void>
     let startIndex = 0
     let totalItems = 0
@@ -16,8 +17,14 @@
     $: hasMore = totalItems > $books.length
 
     const handleSubmit = () => {
+        unSearched = false
         if (!q.trim()) return
         promise = getBooks()
+     }
+
+     const searchToClick = (word)=>{
+         q = word
+         handleSubmit()
      }
 
     const getBooks = async () => {
@@ -50,6 +57,13 @@
 <form on:submit|preventDefault={handleSubmit}>
     <SearchBar bind:value={q} />
 </form>
+{#if unSearched}
+    <ul>
+        <li on:click={()=>searchToClick("React")}>React</li>
+        <li on:click={()=>searchToClick("TypeScript")}>TypeScript</li>
+        <li on:click={()=>searchToClick("Vue")}>Vue</li>
+    </ul>
+{/if}
 <div class="text-center mt-4">
     {#if empty}
       <div>検索結果が見つかりませんでした。</div>
