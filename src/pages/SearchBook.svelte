@@ -58,10 +58,12 @@
     <SearchBar bind:value={q} />
 </form>
 {#if unSearched}
-    <ul>
+    <ul class="flex justify-between text-blue-400 cursor-pointer m-3">
         <li on:click={()=>searchToClick("React")}>React</li>
         <li on:click={()=>searchToClick("TypeScript")}>TypeScript</li>
         <li on:click={()=>searchToClick("Vue")}>Vue</li>
+        <li on:click={()=>searchToClick("Angular")}>Angular</li>
+        <li on:click={()=>searchToClick("Svelte")}>Svelte</li>
     </ul>
 {/if}
 <div class="text-center mt-4">
