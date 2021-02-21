@@ -1,6 +1,7 @@
 import SearchBook from "../pages/SearchBook.svelte";
-// import DetailsBook from "../pages/DetailsBook.svelte";
+import BookDetail from "../pages/BookDetail.svelte";
 
 export const routes = {
   "/": SearchBook,
+  "/books/:id": BookDetail,
 };

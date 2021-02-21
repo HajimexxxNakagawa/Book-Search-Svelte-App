@@ -1,8 +1,8 @@
 <script lang="ts">
     type Params = { id: string }
     export let params: Params
-  </script>
+</script>
   
-  <div>
+<div>
     { params.id }
-  </div>
+</div>
